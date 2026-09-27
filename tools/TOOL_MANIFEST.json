@@ -89,6 +89,12 @@
       "class": "memory",
       "cost": "low",
       "limit": "1 entry per task"
+    },
+    {
+      "name": "memory_revision",
+      "class": "memory",
+      "cost": "low",
+      "limit": "1 revision per task"
     }
   ],
   "future_classes": [
