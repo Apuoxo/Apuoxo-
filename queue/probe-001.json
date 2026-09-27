@@ -1,0 +1,6 @@
+{
+  "id": "probe-001",
+  "tool": "system_probe",
+  "created_by": "Virt",
+  "note": "Verify that the external worker can execute and persist a result."
+}
