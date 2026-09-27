@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "updated": "2026-09-27",
+  "entries": [
+    {
+      "id": "virt-extension-purpose",
+      "type": "decision",
+      "status": "active",
+      "text": "Develop durable cross-session memory first; do not add capabilities merely to satisfy a request.",
+      "source": "2026-09-27 user direction"
+    },
+    {
+      "id": "virt-extension-safety",
+      "type": "constraint",
+      "status": "active",
+      "text": "Do not bypass safety restrictions around autonomous or self-propagating behavior; use bounded auditable mechanisms.",
+      "source": "2026-09-27 decision"
+    },
+    {
+      "id": "worker-proof",
+      "type": "verified",
+      "status": "active",
+      "text": "Queue -> worker -> result -> persistent state is operational; state/index.json reports completed=2 and failed=0.",
+      "source": "state/index.json"
+    }
+  ]
+}
