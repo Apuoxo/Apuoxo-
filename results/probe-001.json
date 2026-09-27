@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "task_id": "probe-001",
+  "tool": "system_probe",
+  "started": "2026-09-27T07:05:28.779201+00:00",
+  "ok": true,
+  "data": {
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "machine": "x86_64",
+    "github_actions": "true",
+    "runner_os": "Linux"
+  },
+  "finished": "2026-09-27T07:05:28.783176+00:00"
+}
