@@ -1,7 +1,0 @@
-{
-  "id":"memory-candidates-001",
-  "tool":"memory_candidates",
-  "created_by":"Virt",
-  "note":"Verify bounded evidence-backed memory consolidation candidates.",
-  "args":{"limit":20}
-}

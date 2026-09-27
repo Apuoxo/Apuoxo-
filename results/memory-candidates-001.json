@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "task_id": "memory-candidates-001",
+  "tool": "memory_candidates",
+  "started": "2026-09-27T07:54:47.552751+00:00",
+  "ok": true,
+  "data": {
+    "source": "state/AUDIT.jsonl",
+    "candidates": [
+      {
+        "candidate_id": "candidate-audit-004",
+        "type": "verified_candidate",
+        "text": "Added bounded request audit protocol and JSONL log.",
+        "evidence": {
+          "event_id": "audit-004",
+          "request_id": "audit-system-development",
+          "timestamp": "2026-09-27T07:50:54.000778+00:00"
+        },
+        "result": "queued for worker verification"
+      },
+      {
+        "candidate_id": "candidate-memory-audit-001",
+        "type": "verified_candidate",
+        "text": "Persisted request-cycle audit requirement in MEMORY.json.",
+        "evidence": {
+          "event_id": "memory-audit-001",
+          "request_id": "2026-09-27-audit-cycle",
+          "timestamp": "2026-09-27T07:54:13.697916+00:00"
+        },
+        "result": "queued for worker verification"
+      }
+    ],
+    "count": 2,
+    "limit": 20
+  },
+  "finished": "2026-09-27T07:54:47.552873+00:00"
+}
