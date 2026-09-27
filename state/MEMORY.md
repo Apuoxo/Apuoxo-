@@ -32,6 +32,7 @@ Store only information that improves future work: stable facts, active projects,
 ## Decision log
 
 - 2026-09-27: The goal of the extension layer was clarified: develop durable memory first, not add tools merely to satisfy a request.
+- 2026-09-27: User made persistent GitHub memory a hard requirement for every request: use the memory layer before answering or executing any request when the GitHub layer is available.
 - 2026-09-27: Do not bypass safety restrictions around autonomous/self-propagating behavior. Prefer bounded, explicit, auditable mechanisms.
 
 ## Open questions
