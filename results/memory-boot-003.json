@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "task_id": "memory-boot-003",
+  "tool": "memory_boot",
+  "started": "2026-09-27T07:45:39.777045+00:00",
+  "ok": true,
+  "data": {
+    "boot": {
+      "schema": 1,
+      "always_boot": true,
+      "purpose": "Session startup checkpoint for Virt.",
+      "required_reads": [
+        "state/BOOT.json",
+        "state/MEMORY.json"
+      ],
+      "human_context": "state/MEMORY.md",
+      "state_index": "state/index.json",
+      "boot_rule": "At the start of every new conversation, and before project-specific assumptions, load the persistent memory and use relevant entries for the current request.",
+      "scope": "Use persistent memory for continuity; do not treat it as a substitute for fresh verification.",
+      "safety": "Do not create autonomous or self-propagating behavior. Use bounded, explicit, auditable mechanisms.",
+      "last_verified_task": "verify-extension-002",
+      "last_verified_result": "results/verify-extension-002.json"
+    },
+    "memory_schema": 1,
+    "updated": "2026-09-27",
+    "entries": [],
+    "count": 0,
+    "query": "memory boot"
+  },
+  "finished": "2026-09-27T07:45:39.777234+00:00"
+}

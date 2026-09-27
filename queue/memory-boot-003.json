@@ -1,7 +1,0 @@
-{
-  "id": "memory-boot-003",
-  "tool": "memory_boot",
-  "created_by": "Virt",
-  "note": "Verify the bounded memory boot path reads BOOT and relevant persistent memory.",
-  "args": {"query": "memory boot", "limit": 20}
-}
