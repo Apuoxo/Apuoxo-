@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "task_id": "verify-extension-002",
+  "tool": "python_compile",
+  "started": "2026-09-27T07:14:28.397172+00:00",
+  "ok": true,
+  "data": {
+    "path": "tools/virt_worker.py",
+    "syntax_ok": true
+  },
+  "finished": "2026-09-27T07:14:28.400854+00:00"
+}

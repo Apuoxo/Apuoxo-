@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "status": "idle",
-  "last_worker": "2026-09-27T07:13:35.036980+00:00",
-  "last_task": "probe-001",
-  "last_result": "results/probe-001.json",
-  "completed": 1,
+  "last_worker": "2026-09-27T07:14:28.401092+00:00",
+  "last_task": "verify-extension-002",
+  "last_result": "results/verify-extension-002.json",
+  "completed": 2,
   "failed": 0
 }
