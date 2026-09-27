@@ -71,6 +71,12 @@
       "class": "audit",
       "cost": "low",
       "limit": "one bounded JSONL event"
+    },
+    {
+      "name": "audit_search",
+      "class": "audit",
+      "cost": "low",
+      "limit": "50 events"
     }
   ],
   "future_classes": [
