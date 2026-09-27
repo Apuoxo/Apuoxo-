@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -65,7 +65,25 @@ def python_compile(args):
 def system_probe(args):
     return {"platform":platform.platform(),"python":sys.version.split()[0],"machine":platform.machine(),"github_actions":os.environ.get("GITHUB_ACTIONS","false"),"runner_os":os.environ.get("RUNNER_OS")}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe}
+def read_text(args):
+    p=safe_path(args["path"])
+    limit=min(max(int(args.get("max_bytes",8192)),1),32768)
+    data=p.read_bytes()[:limit]
+    try:
+        text=data.decode("utf-8")
+    except UnicodeDecodeError:
+        raise ValueError("file is not UTF-8 text")
+    return {"path":p.relative_to(ROOT).as_posix(),"bytes_returned":len(data),"truncated":p.stat().st_size>limit,"text":text}
+
+def artifact_manifest(args):
+    base=RESULTS
+    rows=[]
+    for p in sorted(base.glob("*.json")):
+        h=hashlib.sha256(p.read_bytes()).hexdigest()
+        rows.append({"path":p.relative_to(ROOT).as_posix(),"size":p.stat().st_size,"sha256":h})
+    return {"results":rows,"count":len(rows)}
+
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
