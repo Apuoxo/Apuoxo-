@@ -77,6 +77,12 @@
       "class": "audit",
       "cost": "low",
       "limit": "50 events"
+    },
+    {
+      "name": "memory_candidates",
+      "class": "memory",
+      "cost": "low",
+      "limit": "50 candidates"
     }
   ],
   "future_classes": [
