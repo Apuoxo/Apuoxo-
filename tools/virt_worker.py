@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Small deterministic worker for the Virt Extension Layer."""
 from __future__ import annotations
-import argparse, hashlib, json, os, platform, re, sys
+import argparse, difflib, hashlib, json, os, platform, re, sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -75,6 +75,24 @@ def read_text(args):
         raise ValueError("file is not UTF-8 text")
     return {"path":p.relative_to(ROOT).as_posix(),"bytes_returned":len(data),"truncated":p.stat().st_size>limit,"text":text}
 
+def diff_text(args):
+    left=safe_path(args["left"])
+    right=safe_path(args["right"])
+    limit=min(max(int(args.get("max_lines",500)),1),2000)
+    try:
+        a=left.read_text(encoding="utf-8").splitlines()
+        b=right.read_text(encoding="utf-8").splitlines()
+    except UnicodeDecodeError:
+        raise ValueError("diff_text requires UTF-8 text files")
+    diff=list(difflib.unified_diff(a,b,fromfile=left.relative_to(ROOT).as_posix(),tofile=right.relative_to(ROOT).as_posix(),lineterm=""))
+    return {"left":left.relative_to(ROOT).as_posix(),"right":right.relative_to(ROOT).as_posix(),"lines":diff[:limit],"count":len(diff),"truncated":len(diff)>limit}
+
+def state_report(args):
+    state=json.loads(STATE.read_text()) if STATE.exists() else {}
+    queued=sorted(p.name for p in QUEUE.glob("*.json"))
+    results=sorted(p.name for p in RESULTS.glob("*.json"))
+    return {"state":state,"queued":queued,"result_files":results,"queue_count":len(queued),"result_count":len(results)}
+
 def artifact_manifest(args):
     base=RESULTS
     rows=[]
@@ -83,7 +101,7 @@ def artifact_manifest(args):
         rows.append({"path":p.relative_to(ROOT).as_posix(),"size":p.stat().st_size,"sha256":h})
     return {"results":rows,"count":len(rows)}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
