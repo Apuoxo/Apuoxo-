@@ -25,7 +25,8 @@
         "diff_text",
         "state_report",
         "cargo_check",
-        "memory_boot"
+        "memory_boot",
+        "audit_append"
       ]
     },
     "args": {
