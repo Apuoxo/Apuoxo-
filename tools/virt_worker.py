@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search", "memory_candidates"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search", "memory_candidates", "memory_promote"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -162,6 +162,30 @@ def audit_search(args):
         if len(matches)>=limit: break
     return {"path":"state/AUDIT.jsonl","matches":matches,"count":len(matches),"truncated":len(matches)>=limit}
 
+def memory_promote(args):
+    memory_path=ROOT / "state" / "MEMORY.json"
+    if not isinstance(args.get("entry"),dict):
+        raise ValueError("memory_promote requires args.entry")
+    entry=dict(args["entry"])
+    required=("id","type","status","text","source")
+    if any(not str(entry.get(k,"")).strip() for k in required):
+        raise ValueError("entry requires id,type,status,text,source")
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,80}",str(entry["id"])):
+        raise ValueError("invalid memory entry id")
+    if entry.get("status") not in ("active","verified","verified_pending"):
+        raise ValueError("invalid memory entry status")
+    memory=json.loads(memory_path.read_text(encoding="utf-8"))
+    entries=memory.setdefault("entries",[])
+    existing=next((e for e in entries if e.get("id")==entry["id"]),None)
+    if existing is not None:
+        if existing == entry:
+            return {"path":"state/MEMORY.json","action":"unchanged","entry":entry}
+        raise ValueError("memory entry id already exists with different content")
+    entries.append(entry)
+    memory["updated"]=datetime.now(timezone.utc).date().isoformat()
+    memory_path.write_text(json.dumps(memory,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+    return {"path":"state/MEMORY.json","action":"added","entry":entry}
+
 def memory_candidates(args):
     audit_path=ROOT / "state" / "AUDIT.jsonl"
     if not audit_path.exists():
@@ -210,7 +234,7 @@ def memory_boot(args):
     limit=min(max(int(args.get("limit",20)),1),50)
     return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search,"memory_candidates":memory_candidates}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search,"memory_candidates":memory_candidates,"memory_promote":memory_promote}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
