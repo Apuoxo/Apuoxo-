@@ -26,7 +26,7 @@ def inventory(args):
     base = safe_path(args.get("root", ".")); rows=[]
     for p in sorted(base.rglob("*")):
         if not p.is_file() or ".git" in p.parts: continue
-        h=hashlib.sha256();
+        h=hashlib.sha256()
         with p.open("rb") as f:
             for b in iter(lambda:f.read(1024*1024), b""): h.update(b)
         rows.append({"path":p.relative_to(ROOT).as_posix(),"size":p.stat().st_size,"sha256":h.hexdigest()})
@@ -80,9 +80,14 @@ def process(path):
     path.unlink(); return result
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--once",action="store_true"); ap.parse_args()
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--once",action="store_true")
+    args=ap.parse_args()
     QUEUE.mkdir(exist_ok=True); RESULTS.mkdir(exist_ok=True)
-    paths=sorted(QUEUE.glob("*.json")); processed=[]
+    paths=sorted(QUEUE.glob("*.json"))
+    if args.once:
+        paths=paths[:1]
+    processed=[]
     for p in paths:
         try: processed.append(process(p))
         except Exception as e:
