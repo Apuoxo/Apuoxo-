@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search", "memory_candidates", "memory_promote"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search", "memory_candidates", "memory_promote", "memory_revision"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -162,6 +162,30 @@ def audit_search(args):
         if len(matches)>=limit: break
     return {"path":"state/AUDIT.jsonl","matches":matches,"count":len(matches),"truncated":len(matches)>=limit}
 
+def memory_revision(args):
+    memory_path=ROOT / "state" / "MEMORY.json"
+    if not isinstance(args.get("entry"),dict):
+        raise ValueError("memory_revision requires args.entry")
+    entry=dict(args["entry"])
+    required=("id","type","status","text","source","supersedes")
+    if any(not str(entry.get(k,"")).strip() for k in required):
+        raise ValueError("entry requires id,type,status,text,source,supersedes")
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,80}",str(entry["id"])):
+        raise ValueError("invalid memory entry id")
+    memory=json.loads(memory_path.read_text(encoding="utf-8"))
+    entries=memory.setdefault("entries",[])
+    if any(e.get("id")==entry["id"] for e in entries):
+        raise ValueError("revision id already exists")
+    target=next((e for e in entries if e.get("id")==entry["supersedes"]),None)
+    if target is None:
+        raise ValueError("superseded entry not found")
+    entry["type"]="revision"
+    entries.append(entry)
+    target["status"]="superseded"
+    memory["updated"]=datetime.now(timezone.utc).date().isoformat()
+    memory_path.write_text(json.dumps(memory,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+    return {"path":"state/MEMORY.json","action":"revised","superseded":entry["supersedes"],"entry":entry}
+
 def memory_promote(args):
     memory_path=ROOT / "state" / "MEMORY.json"
     if not isinstance(args.get("entry"),dict):
@@ -234,7 +258,7 @@ def memory_boot(args):
     limit=min(max(int(args.get("limit",20)),1),50)
     return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search,"memory_candidates":memory_candidates,"memory_promote":memory_promote}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search,"memory_candidates":memory_candidates,"memory_promote":memory_promote,"memory_revision":memory_revision}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
