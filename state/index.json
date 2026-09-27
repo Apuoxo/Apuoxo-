@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "status": "ready",
+  "last_worker": null,
+  "last_task": null,
+  "last_result": null,
+  "completed": 0,
+  "failed": 0
+}
