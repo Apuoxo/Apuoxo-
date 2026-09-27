@@ -29,7 +29,8 @@
         "audit_append",
         "audit_search",
         "memory_candidates",
-        "memory_promote"
+        "memory_promote",
+        "memory_revision"
       ]
     },
     "args": {
