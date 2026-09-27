@@ -1,0 +1,49 @@
+name: Virt Extension Worker
+
+on:
+  push:
+    branches: [main]
+    paths: ["queue/**", "tools/**", "state/**", "protocol/**", ".github/workflows/virt-worker.yml"]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [virt_task]
+  schedule:
+    - cron: "7/5 * * * *"
+
+concurrency:
+  group: virt-extension-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: Process queued tasks
+        run: python3 tools/virt_worker.py --once
+      - name: Persist results
+        run: |
+          git config user.name "virt-worker"
+          git config user.email "virt-worker@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add queue results state
+            git commit -m "worker: persist task result"
+            git push
+          fi
+      - name: Upload state and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: virt-worker-state
+          path: |
+            state/
+            results/
+          if-no-files-found: ignore
+          retention-days: 14
