@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -112,6 +112,26 @@ def cargo_check(args):
     proc=subprocess.run(["cargo","check","--manifest-path",str(manifest)],cwd=str(ROOT),capture_output=True,text=True,timeout=timeout)
     return {"manifest":manifest.relative_to(ROOT).as_posix(),"returncode":proc.returncode,"ok":proc.returncode==0,"stdout":proc.stdout[-12000:],"stderr":proc.stderr[-12000:]}
 
+
+def audit_append(args):
+    audit_path=ROOT / "state" / "AUDIT.jsonl"
+    event={
+        "schema":1,
+        "event_id":str(args.get("event_id","")).strip(),
+        "request_id":str(args.get("request_id","")).strip(),
+        "kind":str(args.get("kind","request")).strip(),
+        "timestamp":str(args.get("timestamp","")).strip() or now(),
+        "actor":str(args.get("actor","Virt")).strip(),
+        "summary":str(args.get("summary","")).strip(),
+        "result":str(args.get("result","")).strip()
+    }
+    if not event["event_id"] or not event["summary"]:
+        raise ValueError("audit_append requires event_id and summary")
+    audit_path.parent.mkdir(exist_ok=True)
+    with audit_path.open("a",encoding="utf-8") as f:
+        f.write(json.dumps(event,ensure_ascii=False,separators=(",",":"))+"\n")
+    return {"path":"state/AUDIT.jsonl","event":event}
+
 def memory_boot(args):
     boot_path=ROOT / "state" / "BOOT.json"
     memory_path=ROOT / "state" / "MEMORY.json"
@@ -131,7 +151,7 @@ def memory_boot(args):
     limit=min(max(int(args.get("limit",20)),1),50)
     return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
