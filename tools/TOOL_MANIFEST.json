@@ -83,6 +83,12 @@
       "class": "memory",
       "cost": "low",
       "limit": "50 candidates"
+    },
+    {
+      "name": "memory_promote",
+      "class": "memory",
+      "cost": "low",
+      "limit": "1 entry per task"
     }
   ],
   "future_classes": [
