@@ -29,6 +29,13 @@
       "status": "active",
       "text": "Use the persistent memory layer as the normal startup path for every user request when the GitHub layer is available: read BOOT, then relevant MEMORY, before project-specific assumptions.",
       "source": "2026-09-27 user direction"
+    },
+    {
+      "id": "memory-boot-tool",
+      "type": "verified_pending",
+      "status": "active",
+      "text": "Added a bounded memory_boot worker capability that reads state/BOOT.json and state/MEMORY.json and can return relevant entries by query. Runtime verification is queued as memory-boot-003.",
+      "source": "commit f781c9fbaa0dc6639488b1e17f3e2e01f474bb10"
     }
   ]
 }
