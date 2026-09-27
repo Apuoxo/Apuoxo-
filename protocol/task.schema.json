@@ -5,7 +5,7 @@
   "required": ["id", "tool"],
   "properties": {
     "id": {"type":"string","pattern":"^[A-Za-z0-9._-]{1,80}$"},
-    "tool": {"type":"string","enum":["inventory","grep","sha256","json_validate","python_compile","system_probe","read_text","artifact_manifest","diff_text","state_report"]},
+    "tool": {"type":"string","enum":["inventory","grep","sha256","json_validate","python_compile","system_probe","read_text","artifact_manifest","diff_text","state_report","cargo_check"]},
     "args": {"type":"object","additionalProperties":true},
     "created_by": {"type":"string"},
     "note": {"type":"string"}
