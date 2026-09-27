@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search", "memory_candidates"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -162,6 +162,35 @@ def audit_search(args):
         if len(matches)>=limit: break
     return {"path":"state/AUDIT.jsonl","matches":matches,"count":len(matches),"truncated":len(matches)>=limit}
 
+def memory_candidates(args):
+    audit_path=ROOT / "state" / "AUDIT.jsonl"
+    if not audit_path.exists():
+        return {"source":"state/AUDIT.jsonl","candidates":[],"count":0}
+    limit=min(max(int(args.get("limit",20)),1),50)
+    candidates=[]
+    seen=set()
+    for line in audit_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip(): continue
+        try: event=json.loads(line)
+        except json.JSONDecodeError: continue
+        if event.get("kind") not in ("checkpoint","result"): continue
+        summary=str(event.get("summary","")).strip()
+        result=str(event.get("result","")).strip()
+        text=(summary+" "+result).strip()
+        if not text: continue
+        key=re.sub(r"\s+"," ",text.lower())
+        if key in seen: continue
+        seen.add(key)
+        candidates.append({
+            "candidate_id":"candidate-"+str(event.get("event_id","")),
+            "type":"verified_candidate" if event.get("kind")=="checkpoint" else "result_candidate",
+            "text":summary,
+            "evidence":{"event_id":event.get("event_id"),"request_id":event.get("request_id"),"timestamp":event.get("timestamp")},
+            "result":result
+        })
+        if len(candidates)>=limit: break
+    return {"source":"state/AUDIT.jsonl","candidates":candidates,"count":len(candidates),"limit":limit}
+
 def memory_boot(args):
     boot_path=ROOT / "state" / "BOOT.json"
     memory_path=ROOT / "state" / "MEMORY.json"
@@ -181,7 +210,7 @@ def memory_boot(args):
     limit=min(max(int(args.get("limit",20)),1),50)
     return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search,"memory_candidates":memory_candidates}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
