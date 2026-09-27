@@ -27,7 +27,8 @@
         "cargo_check",
         "memory_boot",
         "audit_append",
-        "audit_search"
+        "audit_search",
+        "memory_candidates"
       ]
     },
     "args": {
