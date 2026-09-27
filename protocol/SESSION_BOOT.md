@@ -26,3 +26,7 @@ The memory layer is persistent state, not a continuously running agent. It must 
 For each handled user request, Virt should create a bounded `request` audit event before substantive work when the GitHub layer is available, then create an `action` and/or `result` event when work is performed or completed. These events are traceability records, not a transcript.
 
 If the exact platform message timestamp is unavailable, the event must not pretend to know it; the worker timestamp is the processing time.
+
+### Memory consolidation
+
+The worker may generate bounded `memory_candidates` from checkpoint/result audit events. Candidates are evidence-backed proposals only; they do not modify `MEMORY.json` automatically. Promotion into durable memory requires an explicit checkpoint/update step.
