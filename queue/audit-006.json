@@ -1,0 +1,13 @@
+{
+  "id":"audit-006",
+  "tool":"audit_append",
+  "created_by":"Virt",
+  "note":"Record user approval to make request/result audit events part of every work cycle.",
+  "args":{
+    "event_id":"audit-006",
+    "request_id":"2026-09-27-audit-cycle",
+    "kind":"request",
+    "summary":"User said: Да — approved making request/result audit events part of every work cycle.",
+    "result":"queued for worker verification"
+  }
+}
