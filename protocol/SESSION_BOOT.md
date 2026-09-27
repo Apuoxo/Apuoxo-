@@ -34,3 +34,7 @@ The worker may generate bounded `memory_candidates` from checkpoint/result audit
 ### Memory promotion
 
 `memory_promote` may add one evidence-backed entry to `state/MEMORY.json`. Promotion is explicit: the task must provide the complete entry, including provenance. Existing IDs cannot be overwritten; a conflicting ID fails instead of silently replacing memory.
+
+### Memory revision
+
+When a verified fact becomes stale, use `memory_revision` instead of overwriting it. The old entry is marked `superseded`, and a new entry records `supersedes` plus provenance. This preserves the history of what was believed and why it changed.
