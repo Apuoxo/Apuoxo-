@@ -54,9 +54,17 @@
     {
       "id": "memory-promotion-proof",
       "type": "verified",
-      "status": "verified",
+      "status": "superseded",
       "text": "Explicit memory promotion accepts a complete evidence-backed entry and refuses conflicting existing IDs.",
       "source": "worker verification memory-promote-001"
+    },
+    {
+      "id": "memory-promotion-proof-v2",
+      "type": "revision",
+      "status": "verified",
+      "text": "Explicit memory promotion accepts a complete evidence-backed entry and refuses conflicting existing IDs; revisions preserve the superseded entry.",
+      "source": "worker verification memory-revision-001",
+      "supersedes": "memory-promotion-proof"
     }
   ]
 }
