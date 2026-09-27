@@ -28,7 +28,8 @@
         "memory_boot",
         "audit_append",
         "audit_search",
-        "memory_candidates"
+        "memory_candidates",
+        "memory_promote"
       ]
     },
     "args": {
