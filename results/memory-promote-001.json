@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "task_id": "memory-promote-001",
+  "tool": "memory_promote",
+  "started": "2026-09-27T07:55:29.719501+00:00",
+  "ok": true,
+  "data": {
+    "path": "state/MEMORY.json",
+    "action": "added",
+    "entry": {
+      "id": "memory-promotion-proof",
+      "type": "verified",
+      "status": "verified",
+      "text": "Explicit memory promotion accepts a complete evidence-backed entry and refuses conflicting existing IDs.",
+      "source": "worker verification memory-promote-001"
+    }
+  },
+  "finished": "2026-09-27T07:55:29.719709+00:00"
+}

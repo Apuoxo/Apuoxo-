@@ -50,6 +50,13 @@
       "status": "active",
       "text": "For every handled user request, create bounded request/action/result audit events when the GitHub layer is available; do not claim exact platform timestamps unless supplied.",
       "source": "2026-09-27 explicit user approval; protocol/SESSION_BOOT.md"
+    },
+    {
+      "id": "memory-promotion-proof",
+      "type": "verified",
+      "status": "verified",
+      "text": "Explicit memory promotion accepts a complete evidence-backed entry and refuses conflicting existing IDs.",
+      "source": "worker verification memory-promote-001"
     }
   ]
 }
