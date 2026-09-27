@@ -26,7 +26,8 @@
         "state_report",
         "cargo_check",
         "memory_boot",
-        "audit_append"
+        "audit_append",
+        "audit_search"
       ]
     },
     "args": {
