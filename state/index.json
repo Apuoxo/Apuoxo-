@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "status": "idle",
-  "last_worker": "2026-09-27T07:52:47.936672+00:00",
-  "last_task": "audit-005",
-  "last_result": "results/audit-005.json",
-  "completed": 5,
+  "last_worker": "2026-09-27T07:53:18.646027+00:00",
+  "last_task": "audit-search-001",
+  "last_result": "results/audit-search-001.json",
+  "completed": 6,
   "failed": 0
 }
