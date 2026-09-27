@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot", "audit_append", "audit_search"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -132,6 +132,36 @@ def audit_append(args):
         f.write(json.dumps(event,ensure_ascii=False,separators=(",",":"))+"\n")
     return {"path":"state/AUDIT.jsonl","event":event}
 
+
+def audit_search(args):
+    audit_path=ROOT / "state" / "AUDIT.jsonl"
+    if not audit_path.exists():
+        return {"path":"state/AUDIT.jsonl","matches":[],"count":0,"truncated":False}
+    query=str(args.get("query","")).strip().lower()
+    request_id=str(args.get("request_id","")).strip()
+    kind=str(args.get("kind","")).strip()
+    since=str(args.get("since","")).strip()
+    until=str(args.get("until","")).strip()
+    limit=min(max(int(args.get("limit",20)),1),50)
+    terms=[t for t in re.split(r"\W+",query) if t]
+    matches=[]
+    for line in audit_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip(): continue
+        try:
+            event=json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if request_id and event.get("request_id") != request_id: continue
+        if kind and event.get("kind") != kind: continue
+        ts=str(event.get("timestamp",""))
+        if since and ts < since: continue
+        if until and ts > until: continue
+        hay=" ".join(str(event.get(k,"")) for k in ("event_id","request_id","kind","actor","summary","result")).lower()
+        if terms and not all(t in hay for t in terms): continue
+        matches.append(event)
+        if len(matches)>=limit: break
+    return {"path":"state/AUDIT.jsonl","matches":matches,"count":len(matches),"truncated":len(matches)>=limit}
+
 def memory_boot(args):
     boot_path=ROOT / "state" / "BOOT.json"
     memory_path=ROOT / "state" / "MEMORY.json"
@@ -151,7 +181,7 @@ def memory_boot(args):
     limit=min(max(int(args.get("limit",20)),1),50)
     return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append}
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot,"audit_append":audit_append,"audit_search":audit_search}
 
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
