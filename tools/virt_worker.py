@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "queue"
 RESULTS = ROOT / "results"
 STATE = ROOT / "state" / "index.json"
-TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check"}
+TOOLS = {"inventory", "grep", "sha256", "json_validate", "python_compile", "system_probe", "read_text", "artifact_manifest", "diff_text", "state_report", "cargo_check", "memory_boot"}
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -101,9 +101,6 @@ def artifact_manifest(args):
         rows.append({"path":p.relative_to(ROOT).as_posix(),"size":p.stat().st_size,"sha256":h})
     return {"results":rows,"count":len(rows)}
 
-HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check}
-
-
 def cargo_check(args):
     manifest=safe_path(args.get("manifest","Cargo.toml"))
     if manifest.name!="Cargo.toml":
@@ -114,6 +111,28 @@ def cargo_check(args):
     timeout=min(max(int(args.get("timeout",120)),1),300)
     proc=subprocess.run(["cargo","check","--manifest-path",str(manifest)],cwd=str(ROOT),capture_output=True,text=True,timeout=timeout)
     return {"manifest":manifest.relative_to(ROOT).as_posix(),"returncode":proc.returncode,"ok":proc.returncode==0,"stdout":proc.stdout[-12000:],"stderr":proc.stderr[-12000:]}
+
+def memory_boot(args):
+    boot_path=ROOT / "state" / "BOOT.json"
+    memory_path=ROOT / "state" / "MEMORY.json"
+    boot=json.loads(boot_path.read_text(encoding="utf-8"))
+    memory=json.loads(memory_path.read_text(encoding="utf-8"))
+    query=str(args.get("query","")).strip().lower()
+    entries=memory.get("entries",[])
+    if query:
+        terms=[t for t in re.split(r"\\W+",query) if t]
+        scored=[]
+        for e in entries:
+            hay=(str(e.get("id",""))+" "+str(e.get("type",""))+" "+str(e.get("text",""))+" "+str(e.get("source",""))).lower()
+            score=sum(1 for t in terms if t in hay)
+            if score:
+                scored.append((score,e))
+        entries=[e for _,e in sorted(scored,key=lambda x:(-x[0],x[1].get("id","")))]
+    limit=min(max(int(args.get("limit",20)),1),50)
+    return {"boot":boot,"memory_schema":memory.get("schema"),"updated":memory.get("updated"),"entries":entries[:limit],"count":len(entries),"query":query}
+
+HANDLERS={"inventory":inventory,"grep":grep,"sha256":sha256,"json_validate":json_validate,"python_compile":python_compile,"system_probe":system_probe,"read_text":read_text,"artifact_manifest":artifact_manifest,"diff_text":diff_text,"state_report":state_report,"cargo_check":cargo_check,"memory_boot":memory_boot}
+
 def process(path):
     with path.open(encoding="utf-8") as f: task=json.load(f)
     tid=task.get("id"); tool=task.get("tool")
