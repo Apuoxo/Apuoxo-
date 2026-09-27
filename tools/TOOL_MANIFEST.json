@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "purpose": "machine-readable inventory of Virt extension capabilities",
+  "tools": [
+    {"name":"inventory","class":"observe","cost":"low"},
+    {"name":"grep","class":"observe","cost":"low"},
+    {"name":"sha256","class":"verify","cost":"low"},
+    {"name":"json_validate","class":"verify","cost":"low"},
+    {"name":"python_compile","class":"verify","cost":"low"},
+    {"name":"system_probe","class":"observe","cost":"low"}
+  ],
+  "future_classes": ["build","qemu","binary_analysis","fuzz","benchmark","artifact_analysis","experiment_orchestration"]
+}
