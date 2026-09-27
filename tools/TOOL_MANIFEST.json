@@ -65,6 +65,12 @@
       "class": "memory",
       "cost": "low",
       "limit": "50 entries"
+    },
+    {
+      "name": "audit_append",
+      "class": "audit",
+      "cost": "low",
+      "limit": "one bounded JSONL event"
     }
   ],
   "future_classes": [
