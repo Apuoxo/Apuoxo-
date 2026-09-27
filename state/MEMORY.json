@@ -43,6 +43,13 @@
       "status": "active",
       "text": "Bounded request audit logging is operational: audit_append writes timestamped JSONL events to state/AUDIT.jsonl; audit-004 completed successfully.",
       "source": "results/audit-004.json"
+    },
+    {
+      "id": "audit-cycle-protocol",
+      "type": "requirement",
+      "status": "active",
+      "text": "For every handled user request, create bounded request/action/result audit events when the GitHub layer is available; do not claim exact platform timestamps unless supplied.",
+      "source": "2026-09-27 explicit user approval; protocol/SESSION_BOOT.md"
     }
   ]
 }
