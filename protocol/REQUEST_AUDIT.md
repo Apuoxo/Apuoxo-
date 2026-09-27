@@ -19,3 +19,9 @@ Use this log for traceability, not as a transcript. Do not store secrets or unne
 ## Limitation
 
 The GitHub worker can timestamp the event when it processes it. It cannot retroactively recover the exact platform timestamp of a ChatGPT message unless that timestamp is supplied by the caller.
+
+## Search
+
+`audit_search` performs a bounded search over `state/AUDIT.jsonl`.
+
+Supported filters: `query`, `request_id`, `kind`, `since`, `until`, and `limit` (maximum 50). A query is split into terms and all terms must occur in the event fields. Malformed JSONL lines are skipped. This is an index/search aid, not a transcript.
