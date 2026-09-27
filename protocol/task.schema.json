@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Virt queued task",
+  "type": "object",
+  "required": ["id", "tool"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,80}$"
+    },
+    "tool": {
+      "type": "string",
+      "enum": [
+        "inventory",
+        "grep",
+        "sha256",
+        "json_validate",
+        "python_compile",
+        "system_probe"
+      ]
+    },
+    "args": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
