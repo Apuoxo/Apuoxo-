@@ -30,3 +30,7 @@ If the exact platform message timestamp is unavailable, the event must not prete
 ### Memory consolidation
 
 The worker may generate bounded `memory_candidates` from checkpoint/result audit events. Candidates are evidence-backed proposals only; they do not modify `MEMORY.json` automatically. Promotion into durable memory requires an explicit checkpoint/update step.
+
+### Memory promotion
+
+`memory_promote` may add one evidence-backed entry to `state/MEMORY.json`. Promotion is explicit: the task must provide the complete entry, including provenance. Existing IDs cannot be overwritten; a conflicting ID fails instead of silently replacing memory.
