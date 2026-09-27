@@ -26,8 +26,8 @@
     {
       "id": "memory-boot-tool",
       "type": "verified_pending",
-      "status": "active",
-      "text": "Added a bounded memory_boot worker capability that reads state/BOOT.json and state/MEMORY.json and can return relevant entries by query. Runtime verification is queued as memory-boot-003.",
+      "status": "verified",
+      "text": "Bounded memory_boot capability reads BOOT and MEMORY and returns relevant entries by query; runtime verification memory-boot-003 completed successfully.",
       "source": "commit f781c9fbaa0dc6639488b1e17f3e2e01f474bb10"
     },
     {
@@ -36,6 +36,13 @@
       "status": "active",
       "text": "Hard requirement: for every user request, use the persistent GitHub memory layer first when the GitHub layer is available; load BOOT and relevant MEMORY before answering or executing.",
       "source": "2026-09-27 explicit user requirement"
+    },
+    {
+      "id": "request-audit-log",
+      "type": "verified",
+      "status": "active",
+      "text": "Bounded request audit logging is operational: audit_append writes timestamped JSONL events to state/AUDIT.jsonl; audit-004 completed successfully.",
+      "source": "results/audit-004.json"
     }
   ]
 }
