@@ -1,0 +1,7 @@
+{
+  "id": "verify-extension-002",
+  "tool": "python_compile",
+  "created_by": "Virt",
+  "note": "Verify the expanded bounded worker after capability changes.",
+  "args": {"path": "tools/virt_worker.py"}
+}
