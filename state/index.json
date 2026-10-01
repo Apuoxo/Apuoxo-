@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "idle",
-  "last_worker": "2026-10-01T15:41:46.888553+00:00",
+  "last_worker": "2026-10-01T20:31:14.188810+00:00",
   "last_task": "memory-revision-001",
   "last_result": "results/memory-revision-001.json",
   "completed": 11,
