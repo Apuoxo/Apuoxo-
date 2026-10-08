@@ -19,11 +19,11 @@ jobs:
       - name: Install boot tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y grub-efi-amd64-bin grub-common xorriso mtools genisoimage
-      - name: Build image
+          sudo apt-get install -y grub-efi-amd64-bin grub-pc-bin grub-common xorriso mtools genisoimage
+      - name: Build kernel and bootable ISO
         working-directory: androidos
-        run: bash tools/build-bootable-iso.sh
-      - name: Verify image
+        run: bash tools/build-iso.sh
+      - name: Verify ISO
         run: |
           test -s androidos/out/android-os-bootable.iso
           file androidos/out/android-os-bootable.iso
@@ -34,3 +34,4 @@ jobs:
           name: android-os-bootable
           path: androidos/out/android-os-bootable.iso
           if-no-files-found: error
+          retention-days: 14
