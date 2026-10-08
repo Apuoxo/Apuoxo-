@@ -1,0 +1,39 @@
+name: Android-like OS ISO
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'androidos/**'
+      - '.github/workflows/androidos-iso.yml'
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y grub-pc-bin grub-common xorriso nasm
+
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          targets: x86_64-unknown-linux-gnu
+          components: rust-src
+
+      - name: Build ISO
+        working-directory: androidos
+        run: ./tools/build-iso.sh
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-like-os-iso
+          path: androidos/out/android-like-os.iso
+          if-no-files-found: error
