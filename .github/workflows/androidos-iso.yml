@@ -1,4 +1,4 @@
-name: Android bootable image
+name: Android-x86 baseline ISO
 
 on:
   push:
@@ -12,26 +12,31 @@ permissions:
   contents: read
 
 jobs:
-  image:
+  baseline-iso:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Install boot tools
+      - name: Install ISO inspection tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y grub-efi-amd64-bin grub-pc-bin grub-common xorriso mtools genisoimage
-      - name: Build kernel and bootable ISO
+          sudo apt-get install -y xorriso genisoimage
+      - name: Fetch and verify upstream Android-x86 ISO
         working-directory: androidos
         run: bash tools/build-iso.sh
-      - name: Verify ISO
+      - name: Inspect bootable ISO
         run: |
-          test -s androidos/out/android-os-bootable.iso
-          file androidos/out/android-os-bootable.iso
-          isoinfo -d -i androidos/out/android-os-bootable.iso
-      - name: Upload image
+          test -s androidos/out/android-x86_64-9.0-r2.iso
+          test "$(stat -c %s androidos/out/android-x86_64-9.0-r2.iso)" -gt 900000000
+          file androidos/out/android-x86_64-9.0-r2.iso
+          isoinfo -d -i androidos/out/android-x86_64-9.0-r2.iso
+          xorriso -indev androidos/out/android-x86_64-9.0-r2.iso -report_el_torito as_mkisofs
+      - name: Upload verified upstream baseline
         uses: actions/upload-artifact@v4
         with:
-          name: android-os-bootable
-          path: androidos/out/android-os-bootable.iso
+          name: android-x86-9.0-r2-ah532-baseline
+          path: |
+            androidos/out/android-x86_64-9.0-r2.iso
+            androidos/out/SOURCE.txt
           if-no-files-found: error
           retention-days: 14

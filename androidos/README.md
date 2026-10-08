@@ -1,20 +1,28 @@
-# Android-like OS for Fujitsu LIFEBOOK AH532
+# Android-x86 baseline for Fujitsu LIFEBOOK AH532
 
-## Current milestone: boot the custom kernel
+## Current milestone: verified upstream boot image
 
-The ISO now includes the freestanding Rust x86_64 kernel and a GRUB Multiboot2 entry. This is a kernel bring-up milestone, not yet a complete Android distribution: there is no Android userspace, Linux compatibility layer, APK runtime, Wi-Fi stack, or desktop environment at this stage.
+The project now uses the real upstream **Android-x86 9.0-r2** ISO as its baseline instead of trying to boot a freestanding Rust kernel as if it were Android. The source release is Android 9 Pie with Linux kernel 4.19.110.
 
-## Build
+This milestone does **not** claim that a custom Android OS has been built. GitHub Actions downloads the upstream image, verifies its pinned SHA-256, inspects the ISO/El Torito boot metadata, and publishes the verified ISO plus a source manifest as an artifact. The Rust files still present in the repository are not included in this ISO.
 
-GitHub Actions builds the kernel with the nightly Rust toolchain and `build-std=core`, checks that GRUB recognizes the kernel as Multiboot2, creates the UEFI-capable ISO, inspects the ISO, and uploads it as the `android-os-bootable` artifact.
+- Upstream release notes: https://www.android-x86.org/releases/releasenote-9-0-r2.html
+- Upstream download: https://sourceforge.net/projects/android-x86/files/Release%209.0/android-x86_64-9.0-r2.iso/download
+- Expected SHA-256: `f7eb8fc56f29ad5432335dc054183acf086c539f3990f0b6e9ff58bd6df4604e`
 
-## Hardware test
+## Download
 
-1. Download the ISO artifact from the latest successful **Android bootable image** workflow run.
-2. Boot the AH532 from USB using its firmware boot menu.
-3. Record the exact last visible message or take a photo of the screen.
-4. Do not treat a green CI run as proof of a successful physical-hardware boot.
+Open the latest successful **Android-x86 baseline ISO** workflow run and download the artifact named `android-x86-9.0-r2-ah532-baseline`.
 
-## Known limits
+## Required AH532 hardware test
 
-The current kernel's first milestone is a text-mode marker and a stable halt loop. Hardware drivers, memory management, interrupts, storage, networking, sound, Android/Linux userspace, and application execution remain future milestones.
+1. Write the ISO to a USB stick using a raw-image writing tool.
+2. Boot from USB using the laptop firmware boot menu.
+3. First test the live boot only; do not install to the internal disk.
+4. Report the last visible screen or send a photo. We need to verify GRUB, Android startup, Intel HD Graphics 3000 at 1366×768, keyboard/touchpad, audio, Ethernet, and Wi-Fi separately.
+
+A green Actions run verifies the download checksum and ISO structure only. It does **not** prove that the image boots or that its drivers work on the physical AH532.
+
+## Important limitations
+
+Android-x86 9.0-r2 is an old upstream release, not a current Android version. It is selected as a conservative hardware-compatibility baseline; the AH532 has not yet been tested with this image. Custom branding, desktop changes, APK compatibility work, and a newer Android base come only after the real-hardware baseline is confirmed.

@@ -3,25 +3,33 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/out"
-KERNEL="$ROOT/target/target/release/androidos"
+ISO="$OUT/android-x86_64-9.0-r2.iso"
+URL="https://sourceforge.net/projects/android-x86/files/Release%209.0/android-x86_64-9.0-r2.iso/download"
+EXPECTED_SHA256="f7eb8fc56f29ad5432335dc054183acf086c539f3990f0b6e9ff58bd6df4604e"
 
 rm -rf "$OUT"
-mkdir -p "$OUT/iso/boot/grub"
+mkdir -p "$OUT"
 
-rustup toolchain install nightly --profile minimal
-rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
+echo "Source: Android-x86 9.0-r2 (Android 9, Linux kernel 4.19.110)"
+echo "Downloading official upstream ISO..."
+curl --fail --location --retry 3 --retry-all-errors --connect-timeout 30 --output "$ISO" "$URL"
 
-cd "$ROOT"
-cargo +nightly build -Z build-std=core --target target.json --release
+echo "Checking pinned SHA-256..."
+printf '%s  %s\n' "$EXPECTED_SHA256" "$ISO" | sha256sum --check --status || {
+  echo "ERROR: upstream ISO checksum mismatch" >&2
+  exit 1
+}
 
-test -s "$KERNEL"
-file "$KERNEL"
-grub-file --is-x86-multiboot2 "$KERNEL"
+cat > "$OUT/SOURCE.txt" <<'EOF'
+Artifact: android-x86_64-9.0-r2.iso
+Origin: https://www.android-x86.org/releases/releasenote-9-0-r2.html
+Download: https://sourceforge.net/projects/android-x86/files/Release%209.0/android-x86_64-9.0-r2.iso/download
+SHA-256: f7eb8fc56f29ad5432335dc054183acf086c539f3990f0b6e9ff58bd6df4604e
+Base: Android-x86 9.0-r2 (Android 9 Pie), Linux kernel 4.19.110
+This is an unmodified upstream image, not a custom-built Android distribution.
+Hardware boot and AH532 driver compatibility have not been verified by CI.
+EOF
 
-cp "$KERNEL" "$OUT/iso/boot/androidos"
-cp grub/grub.cfg "$OUT/iso/boot/grub/grub.cfg"
-
-grub-mkrescue -o "$OUT/android-os-bootable.iso" "$OUT/iso"
-test -s "$OUT/android-os-bootable.iso"
-isoinfo -d -i "$OUT/android-os-bootable.iso"
-echo "ISO=$OUT/android-os-bootable.iso"
+file "$ISO"
+sha256sum "$ISO"
+echo "ISO=$ISO"
