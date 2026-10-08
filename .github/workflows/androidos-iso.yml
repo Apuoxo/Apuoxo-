@@ -8,6 +8,9 @@ on:
       - '.github/workflows/androidos-iso.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-iso:
     runs-on: ubuntu-latest
@@ -15,22 +18,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Install ISO tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y grub-pc-bin grub-common xorriso nasm
+          sudo apt-get install -y grub-pc-bin grub-common xorriso
 
-      - name: Install Rust nightly
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-          toolchain: nightly
-          targets: x86_64-unknown-linux-gnu
-          components: rust-src
-
-      - name: Build ISO
-        run: |
-          chmod +x androidos/tools/build-iso.sh
-          bash androidos/tools/build-iso.sh
+      - name: Build and verify ISO
+        working-directory: androidos
+        run: bash tools/build-iso.sh
 
       - name: Upload ISO
         uses: actions/upload-artifact@v4
