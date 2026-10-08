@@ -1,0 +1,8 @@
+[build]
+target = "target.json"
+
+[target.x86_64-unknown-none]
+rustflags = [
+  "-C", "link-arg=-Tlinker.ld",
+  "-C", "link-arg=-nostdlib"
+]
