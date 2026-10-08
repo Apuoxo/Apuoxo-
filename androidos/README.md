@@ -1,19 +1,5 @@
-# Android-like OS
+# Android OS image
 
-First experimental bootable foundation for a laptop-oriented Android-like operating system.
-
-## Commit 1 goal
-
-Boot through GRUB and reach a real kernel entry point that writes directly to the VGA text buffer.
-
-The next stages will replace the text-mode proof with framebuffer graphics, input, a window/compositor layer, and the Android-like desktop.
-
-## Build
-
-Requires Rust nightly, GRUB utilities, and xorriso.
-
-    ./tools/build-iso.sh
-
-The result is:
-
-    out/android-like-os.iso
+Current milestone: prepare the bootable image.
+This project does not use Rust or a custom kernel at this stage.
+The image is built around standard UEFI boot tooling; the Android/Linux payload is added after boot-media validation.
