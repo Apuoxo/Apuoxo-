@@ -21,15 +21,16 @@ jobs:
           sudo apt-get install -y grub-pc-bin grub-common xorriso nasm
 
       - name: Install Rust nightly
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@nightly
         with:
           toolchain: nightly
           targets: x86_64-unknown-linux-gnu
           components: rust-src
 
       - name: Build ISO
-        working-directory: androidos
-        run: bash ./tools/build-iso.sh
+        run: |
+          chmod +x androidos/tools/build-iso.sh
+          bash androidos/tools/build-iso.sh
 
       - name: Upload ISO
         uses: actions/upload-artifact@v4
