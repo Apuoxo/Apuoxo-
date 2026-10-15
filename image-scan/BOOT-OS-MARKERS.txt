@@ -1,0 +1,4 @@
+boot/grub/grub.cfg
+boot/grub/i386-pc/efiemu.mod
+boot/grub/i386-pc/efiemu32.o
+boot/grub/i386-pc/efiemu64.o

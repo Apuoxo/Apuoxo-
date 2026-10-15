@@ -1,0 +1,336 @@
+# Aether build image scan
+
+- Input: aether-BUILD-20261015-B91.aaf
+- Scan timestamp (UTC): 2026-10-15T16:07:39Z
+- SHA-256: 32bcab32ad6da8f2e3af33ef9ccf47f0baa429ff52e48cef200417202eb0e1a3
+- Size: 9340928 bytes
+
+## File identification
+aether-BUILD-20261015-B91.aaf: ISO 9660 CD-ROM filesystem data (DOS/MBR boot sector) 'ISOIMAGE' (bootable)
+
+## Header bytes
+ eb 63 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+ 90 90 90 90 90 90 90 90 90 90 eb 49 24 12 0f 09
+ 00 52 be 1b 7c 31 c0 cd 13 46 8a 0c 84 c9 75 10
+ be 39 7c e8 74 01 e9 3d 01 46 6c 6f 70 70 79 00
+ bb 00 70 8e c3 31 db b8 01 02 b5 00 b6 00 cd 13
+ 72 d3 b6 01 b5 4f e9 98 00 00 00 80 00 00 00 00
+
+## Detected container format
+iso
+
+## File inventory
+
+Extracted file count: 293
+
+First 300 paths:
+
+boot.catalog	2048 bytes
+boot/aether.bin	3508488 bytes
+boot/grub/fonts/unicode.pf2	2411806 bytes
+boot/grub/grub.cfg	202 bytes
+boot/grub/i386-pc/915resolution.mod	7812 bytes
+boot/grub/i386-pc/acpi.mod	10604 bytes
+boot/grub/i386-pc/adler32.mod	1228 bytes
+boot/grub/i386-pc/affs.mod	5596 bytes
+boot/grub/i386-pc/afs.mod	6040 bytes
+boot/grub/i386-pc/afsplitter.mod	1492 bytes
+boot/grub/i386-pc/ahci.mod	15616 bytes
+boot/grub/i386-pc/all_video.mod	492 bytes
+boot/grub/i386-pc/aout.mod	956 bytes
+boot/grub/i386-pc/archelp.mod	3020 bytes
+boot/grub/i386-pc/at_keyboard.mod	4140 bytes
+boot/grub/i386-pc/ata.mod	5524 bytes
+boot/grub/i386-pc/backtrace.mod	1576 bytes
+boot/grub/i386-pc/bfs.mod	6780 bytes
+boot/grub/i386-pc/biosdisk.mod	4628 bytes
+boot/grub/i386-pc/bitmap.mod	2188 bytes
+boot/grub/i386-pc/bitmap_scale.mod	3604 bytes
+boot/grub/i386-pc/blocklist.mod	2028 bytes
+boot/grub/i386-pc/boot.mod	2628 bytes
+boot/grub/i386-pc/bsd.mod	31264 bytes
+boot/grub/i386-pc/bswap_test.mod	2252 bytes
+boot/grub/i386-pc/btrfs.mod	20024 bytes
+boot/grub/i386-pc/bufio.mod	2100 bytes
+boot/grub/i386-pc/cat.mod	2852 bytes
+boot/grub/i386-pc/cbfs.mod	3900 bytes
+boot/grub/i386-pc/cbls.mod	3340 bytes
+boot/grub/i386-pc/cbmemc.mod	2448 bytes
+boot/grub/i386-pc/cbtable.mod	1048 bytes
+boot/grub/i386-pc/cbtime.mod	2772 bytes
+boot/grub/i386-pc/chain.mod	3396 bytes
+boot/grub/i386-pc/cmdline_cat_test.mod	2960 bytes
+boot/grub/i386-pc/cmosdump.mod	1164 bytes
+boot/grub/i386-pc/cmostest.mod	1820 bytes
+boot/grub/i386-pc/cmp.mod	2224 bytes
+boot/grub/i386-pc/cmp_test.mod	4608 bytes
+boot/grub/i386-pc/command.lst	3931 bytes
+boot/grub/i386-pc/configfile.mod	2204 bytes
+boot/grub/i386-pc/cpio.mod	2744 bytes
+boot/grub/i386-pc/cpio_be.mod	2988 bytes
+boot/grub/i386-pc/cpuid.mod	1664 bytes
+boot/grub/i386-pc/crc64.mod	1572 bytes
+boot/grub/i386-pc/crypto.lst	936 bytes
+boot/grub/i386-pc/crypto.mod	4896 bytes
+boot/grub/i386-pc/cryptodisk.mod	14716 bytes
+boot/grub/i386-pc/cs5536.mod	3588 bytes
+boot/grub/i386-pc/ctz_test.mod	1684 bytes
+boot/grub/i386-pc/date.mod	2116 bytes
+boot/grub/i386-pc/datehook.mod	1716 bytes
+boot/grub/i386-pc/datetime.mod	2148 bytes
+boot/grub/i386-pc/disk.mod	2300 bytes
+boot/grub/i386-pc/diskfilter.mod	9868 bytes
+boot/grub/i386-pc/div.mod	956 bytes
+boot/grub/i386-pc/div_test.mod	5560 bytes
+boot/grub/i386-pc/dm_nv.mod	1768 bytes
+boot/grub/i386-pc/drivemap.mod	5284 bytes
+boot/grub/i386-pc/echo.mod	1896 bytes
+boot/grub/i386-pc/efiemu.mod	23720 bytes
+boot/grub/i386-pc/efiemu32.o	7620 bytes
+boot/grub/i386-pc/efiemu64.o	10992 bytes
+boot/grub/i386-pc/ehci.mod	16128 bytes
+boot/grub/i386-pc/elf.mod	5728 bytes
+boot/grub/i386-pc/eltorito.img	31228 bytes
+boot/grub/i386-pc/eval.mod	1368 bytes
+boot/grub/i386-pc/exfat.mod	5916 bytes
+boot/grub/i386-pc/exfctest.mod	1380 bytes
+boot/grub/i386-pc/ext2.mod	6128 bytes
+boot/grub/i386-pc/extcmd.mod	4608 bytes
+boot/grub/i386-pc/f2fs.mod	6632 bytes
+boot/grub/i386-pc/fat.mod	6060 bytes
+boot/grub/i386-pc/file.mod	17140 bytes
+boot/grub/i386-pc/font.mod	13512 bytes
+boot/grub/i386-pc/freedos.mod	2612 bytes
+boot/grub/i386-pc/fs.lst	219 bytes
+boot/grub/i386-pc/fshelp.mod	2924 bytes
+boot/grub/i386-pc/functional_test.mod	34168 bytes
+boot/grub/i386-pc/gcry_arcfour.mod	1580 bytes
+boot/grub/i386-pc/gcry_blowfish.mod	8000 bytes
+boot/grub/i386-pc/gcry_camellia.mod	33516 bytes
+boot/grub/i386-pc/gcry_cast5.mod	16356 bytes
+boot/grub/i386-pc/gcry_crc.mod	10532 bytes
+boot/grub/i386-pc/gcry_des.mod	19136 bytes
+boot/grub/i386-pc/gcry_dsa.mod	2188 bytes
+boot/grub/i386-pc/gcry_idea.mod	2884 bytes
+boot/grub/i386-pc/gcry_md4.mod	3048 bytes
+boot/grub/i386-pc/gcry_md5.mod	3668 bytes
+boot/grub/i386-pc/gcry_rfc2268.mod	2316 bytes
+boot/grub/i386-pc/gcry_rijndael.mod	19312 bytes
+boot/grub/i386-pc/gcry_rmd160.mod	8248 bytes
+boot/grub/i386-pc/gcry_rsa.mod	1968 bytes
+boot/grub/i386-pc/gcry_seed.mod	14792 bytes
+boot/grub/i386-pc/gcry_serpent.mod	17764 bytes
+boot/grub/i386-pc/gcry_sha1.mod	8592 bytes
+boot/grub/i386-pc/gcry_sha256.mod	4376 bytes
+boot/grub/i386-pc/gcry_sha512.mod	7908 bytes
+boot/grub/i386-pc/gcry_tiger.mod	12180 bytes
+boot/grub/i386-pc/gcry_twofish.mod	36816 bytes
+boot/grub/i386-pc/gcry_whirlpool.mod	24588 bytes
+boot/grub/i386-pc/gdb.mod	25124 bytes
+boot/grub/i386-pc/geli.mod	5552 bytes
+boot/grub/i386-pc/gettext.mod	4908 bytes
+boot/grub/i386-pc/gfxmenu.mod	38952 bytes
+boot/grub/i386-pc/gfxterm.mod	9892 bytes
+boot/grub/i386-pc/gfxterm_background.mod	2796 bytes
+boot/grub/i386-pc/gfxterm_menu.mod	4912 bytes
+boot/grub/i386-pc/gptsync.mod	3716 bytes
+boot/grub/i386-pc/gzio.mod	8756 bytes
+boot/grub/i386-pc/halt.mod	4640 bytes
+boot/grub/i386-pc/hashsum.mod	5168 bytes
+boot/grub/i386-pc/hdparm.mod	6512 bytes
+boot/grub/i386-pc/hello.mod	1140 bytes
+boot/grub/i386-pc/help.mod	2592 bytes
+boot/grub/i386-pc/hexdump.mod	3072 bytes
+boot/grub/i386-pc/hfs.mod	6900 bytes
+boot/grub/i386-pc/hfsplus.mod	8116 bytes
+boot/grub/i386-pc/hfspluscomp.mod	2988 bytes
+boot/grub/i386-pc/http.mod	5856 bytes
+boot/grub/i386-pc/hwmatch.mod	2452 bytes
+boot/grub/i386-pc/iorw.mod	2800 bytes
+boot/grub/i386-pc/iso9660.mod	9212 bytes
+boot/grub/i386-pc/jfs.mod	6432 bytes
+boot/grub/i386-pc/jpeg.mod	7808 bytes
+boot/grub/i386-pc/json.mod	4244 bytes
+boot/grub/i386-pc/keylayouts.mod	4976 bytes
+boot/grub/i386-pc/keystatus.mod	1840 bytes
+boot/grub/i386-pc/ldm.mod	6252 bytes
+boot/grub/i386-pc/legacy_password_test.mod	14404 bytes
+boot/grub/i386-pc/legacycfg.mod	30100 bytes
+boot/grub/i386-pc/linux.mod	13540 bytes
+boot/grub/i386-pc/linux16.mod	5516 bytes
+boot/grub/i386-pc/loadenv.mod	5748 bytes
+boot/grub/i386-pc/loopback.mod	3352 bytes
+boot/grub/i386-pc/ls.mod	3876 bytes
+boot/grub/i386-pc/lsacpi.mod	4740 bytes
+boot/grub/i386-pc/lsapm.mod	2232 bytes
+boot/grub/i386-pc/lsmmap.mod	1820 bytes
+boot/grub/i386-pc/lspci.mod	4796 bytes
+boot/grub/i386-pc/luks.mod	3912 bytes
+boot/grub/i386-pc/luks2.mod	14388 bytes
+boot/grub/i386-pc/lvm.mod	8548 bytes
+boot/grub/i386-pc/lzopio.mod	4752 bytes
+boot/grub/i386-pc/macbless.mod	3192 bytes
+boot/grub/i386-pc/macho.mod	7372 bytes
+boot/grub/i386-pc/mda_text.mod	2044 bytes
+boot/grub/i386-pc/mdraid09.mod	2104 bytes
+boot/grub/i386-pc/mdraid09_be.mod	1964 bytes
+boot/grub/i386-pc/mdraid1x.mod	1868 bytes
+boot/grub/i386-pc/memdisk.mod	2100 bytes
+boot/grub/i386-pc/memrw.mod	2800 bytes
+boot/grub/i386-pc/minicmd.mod	3664 bytes
+boot/grub/i386-pc/minix.mod	3616 bytes
+boot/grub/i386-pc/minix2.mod	3744 bytes
+boot/grub/i386-pc/minix2_be.mod	3876 bytes
+boot/grub/i386-pc/minix3.mod	3648 bytes
+boot/grub/i386-pc/minix3_be.mod	3812 bytes
+boot/grub/i386-pc/minix_be.mod	3744 bytes
+boot/grub/i386-pc/mmap.mod	8520 bytes
+boot/grub/i386-pc/moddep.lst	5786 bytes
+boot/grub/i386-pc/modinfo.sh	2653 bytes
+boot/grub/i386-pc/morse.mod	2348 bytes
+boot/grub/i386-pc/mpi.mod	27436 bytes
+boot/grub/i386-pc/msdospart.mod	2396 bytes
+boot/grub/i386-pc/mul_test.mod	1984 bytes
+boot/grub/i386-pc/multiboot.mod	14904 bytes
+boot/grub/i386-pc/multiboot2.mod	15940 bytes
+boot/grub/i386-pc/nativedisk.mod	4148 bytes
+boot/grub/i386-pc/net.mod	59392 bytes
+boot/grub/i386-pc/newc.mod	3176 bytes
+boot/grub/i386-pc/nilfs2.mod	6756 bytes
+boot/grub/i386-pc/normal.mod	115044 bytes
+boot/grub/i386-pc/ntfs.mod	10592 bytes
+boot/grub/i386-pc/ntfscomp.mod	4320 bytes
+boot/grub/i386-pc/ntldr.mod	2504 bytes
+boot/grub/i386-pc/odc.mod	2984 bytes
+boot/grub/i386-pc/offsetio.mod	1460 bytes
+boot/grub/i386-pc/ohci.mod	10324 bytes
+boot/grub/i386-pc/part_acorn.mod	1588 bytes
+boot/grub/i386-pc/part_amiga.mod	1812 bytes
+boot/grub/i386-pc/part_apple.mod	2052 bytes
+boot/grub/i386-pc/part_bsd.mod	2680 bytes
+boot/grub/i386-pc/part_dfly.mod	1712 bytes
+boot/grub/i386-pc/part_dvh.mod	1424 bytes
+boot/grub/i386-pc/part_gpt.mod	2300 bytes
+boot/grub/i386-pc/part_msdos.mod	2264 bytes
+boot/grub/i386-pc/part_plan.mod	1732 bytes
+boot/grub/i386-pc/part_sun.mod	1452 bytes
+boot/grub/i386-pc/part_sunpc.mod	1588 bytes
+boot/grub/i386-pc/partmap.lst	111 bytes
+boot/grub/i386-pc/parttool.lst	17 bytes
+boot/grub/i386-pc/parttool.mod	4644 bytes
+boot/grub/i386-pc/password.mod	1820 bytes
+boot/grub/i386-pc/password_pbkdf2.mod	2720 bytes
+boot/grub/i386-pc/pata.mod	4812 bytes
+boot/grub/i386-pc/pbkdf2.mod	1312 bytes
+boot/grub/i386-pc/pbkdf2_test.mod	2100 bytes
+boot/grub/i386-pc/pci.mod	1316 bytes
+boot/grub/i386-pc/pcidump.mod	2384 bytes
+boot/grub/i386-pc/pgp.mod	11404 bytes
+boot/grub/i386-pc/plainmount.mod	7264 bytes
+boot/grub/i386-pc/plan9.mod	6292 bytes
+boot/grub/i386-pc/play.mod	2448 bytes
+boot/grub/i386-pc/png.mod	7988 bytes
+boot/grub/i386-pc/priority_queue.mod	1516 bytes
+boot/grub/i386-pc/probe.mod	3528 bytes
+boot/grub/i386-pc/procfs.mod	2292 bytes
+boot/grub/i386-pc/progress.mod	2136 bytes
+boot/grub/i386-pc/pxe.mod	3680 bytes
+boot/grub/i386-pc/pxechain.mod	2616 bytes
+boot/grub/i386-pc/raid5rec.mod	1292 bytes
+boot/grub/i386-pc/raid6rec.mod	2204 bytes
+boot/grub/i386-pc/random.mod	3696 bytes
+boot/grub/i386-pc/rdmsr.mod	1848 bytes
+boot/grub/i386-pc/read.mod	1784 bytes
+boot/grub/i386-pc/reboot.mod	1640 bytes
+boot/grub/i386-pc/regexp.mod	50756 bytes
+boot/grub/i386-pc/reiserfs.mod	8704 bytes
+boot/grub/i386-pc/relocator.mod	15008 bytes
+boot/grub/i386-pc/romfs.mod	4096 bytes
+boot/grub/i386-pc/scsi.mod	4612 bytes
+boot/grub/i386-pc/search.mod	3700 bytes
+boot/grub/i386-pc/search_fs_file.mod	3124 bytes
+boot/grub/i386-pc/search_fs_uuid.mod	3188 bytes
+boot/grub/i386-pc/search_label.mod	3120 bytes
+boot/grub/i386-pc/sendkey.mod	7012 bytes
+boot/grub/i386-pc/serial.mod	9420 bytes
+boot/grub/i386-pc/setjmp.mod	628 bytes
+boot/grub/i386-pc/setjmp_test.mod	1624 bytes
+boot/grub/i386-pc/setpci.mod	5232 bytes
+boot/grub/i386-pc/sfs.mod	5128 bytes
+boot/grub/i386-pc/shift_test.mod	2448 bytes
+boot/grub/i386-pc/signature_test.mod	6380 bytes
+boot/grub/i386-pc/sleep.mod	2144 bytes
+boot/grub/i386-pc/sleep_test.mod	2268 bytes
+boot/grub/i386-pc/smbios.mod	5524 bytes
+boot/grub/i386-pc/spkmodem.mod	2024 bytes
+boot/grub/i386-pc/squash4.mod	7108 bytes
+boot/grub/i386-pc/strtoull_test.mod	2112 bytes
+boot/grub/i386-pc/syslinuxcfg.mod	17356 bytes
+boot/grub/i386-pc/tar.mod	3516 bytes
+boot/grub/i386-pc/terminal.lst	202 bytes
+boot/grub/i386-pc/terminal.mod	4432 bytes
+boot/grub/i386-pc/terminfo.mod	12196 bytes
+boot/grub/i386-pc/test.mod	5120 bytes
+boot/grub/i386-pc/test_blockarg.mod	1272 bytes
+boot/grub/i386-pc/testload.mod	2740 bytes
+boot/grub/i386-pc/testspeed.mod	2264 bytes
+boot/grub/i386-pc/tftp.mod	5400 bytes
+boot/grub/i386-pc/tga.mod	4592 bytes
+boot/grub/i386-pc/time.mod	1456 bytes
+boot/grub/i386-pc/tr.mod	2336 bytes
+boot/grub/i386-pc/trig.mod	1668 bytes
+boot/grub/i386-pc/true.mod	1152 bytes
+boot/grub/i386-pc/truecrypt.mod	3564 bytes
+boot/grub/i386-pc/udf.mod	8728 bytes
+boot/grub/i386-pc/ufs1.mod	5244 bytes
+boot/grub/i386-pc/ufs1_be.mod	5660 bytes
+boot/grub/i386-pc/ufs2.mod	5372 bytes
+boot/grub/i386-pc/uhci.mod	6524 bytes
+boot/grub/i386-pc/usb.mod	10392 bytes
+boot/grub/i386-pc/usb_keyboard.mod	3764 bytes
+boot/grub/i386-pc/usbms.mod	6912 bytes
+boot/grub/i386-pc/usbserial_common.mod	1924 bytes
+boot/grub/i386-pc/usbserial_ftdi.mod	2296 bytes
+boot/grub/i386-pc/usbserial_pl2303.mod	2632 bytes
+boot/grub/i386-pc/usbserial_usbdebug.mod	1460 bytes
+boot/grub/i386-pc/usbtest.mod	3568 bytes
+boot/grub/i386-pc/vbe.mod	9724 bytes
+boot/grub/i386-pc/verifiers.mod	2624 bytes
+boot/grub/i386-pc/vga.mod	4932 bytes
+boot/grub/i386-pc/vga_text.mod	2140 bytes
+boot/grub/i386-pc/video.lst	33 bytes
+boot/grub/i386-pc/video.mod	5904 bytes
+boot/grub/i386-pc/video_bochs.mod	5588 bytes
+boot/grub/i386-pc/video_cirrus.mod	6004 bytes
+boot/grub/i386-pc/video_colors.mod	5568 bytes
+boot/grub/i386-pc/video_fb.mod	20856 bytes
+boot/grub/i386-pc/videoinfo.mod	3992 bytes
+boot/grub/i386-pc/videotest.mod	4216 bytes
+boot/grub/i386-pc/videotest_checksum.mod	2280 bytes
+boot/grub/i386-pc/wrmsr.mod	1448 bytes
+boot/grub/i386-pc/xfs.mod	8232 bytes
+boot/grub/i386-pc/xnu.mod	27340 bytes
+boot/grub/i386-pc/xnu_uuid.mod	2084 bytes
+boot/grub/i386-pc/xnu_uuid_test.mod	1924 bytes
+boot/grub/i386-pc/xzio.mod	15012 bytes
+boot/grub/i386-pc/zfs.mod	40472 bytes
+boot/grub/i386-pc/zfscrypt.mod	5424 bytes
+boot/grub/i386-pc/zfsinfo.mod	6484 bytes
+boot/grub/i386-pc/zstd.mod	45756 bytes
+boot/iwlwifi-2030-6.ucode	707392 bytes
+
+## Boot, kernel, and OS markers
+
+boot/grub/grub.cfg
+boot/grub/i386-pc/efiemu.mod
+boot/grub/i386-pc/efiemu32.o
+boot/grub/i386-pc/efiemu64.o
+
+## Likely source/build files
+boot/grub/grub.cfg
+boot/grub/i386-pc/modinfo.sh
+
+## Quick interpretation
+
+This is a structural inventory, not a boot test or proof that every listed component is functional.
+The format and paths above were determined by tools run against the committed image.
