@@ -1,0 +1,95 @@
+name: Unpack Aether source archive in source repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/unpack-aether-sources.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install archive tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full file unzip tar gzip
+
+      - name: Decompress and identify source payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/aether-unpack/extracted
+          gzip -t aether-src-latest.aaf.gz
+          gzip -dc aether-src-latest.aaf.gz > /tmp/aether-unpack/payload
+          echo 'Compressed archive:'
+          file aether-src-latest.aaf.gz
+          echo 'Decompressed payload:'
+          file /tmp/aether-unpack/payload
+          wc -c aether-src-latest.aaf.gz /tmp/aether-unpack/payload
+
+      - name: Extract payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload=/tmp/aether-unpack/payload
+          out=/tmp/aether-unpack/extracted
+          if tar -tf "$payload" >/tmp/aether-unpack/tar-list.txt 2>/dev/null; then
+            tar -xf "$payload" -C "$out"
+          elif unzip -t "$payload" >/dev/null 2>&1; then
+            unzip -q "$payload" -d "$out"
+          elif 7z l "$payload" >/dev/null 2>&1; then
+            7z x -y "-o$out" "$payload" >/dev/null
+          else
+            echo 'The .gz layer is valid, but its payload is not recognized as tar, zip, or 7z.' >&2
+            echo 'Payload metadata:' >&2
+            file "$payload" >&2
+            od -An -tx1 -N64 "$payload" >&2
+            strings -n 8 "$payload" | head -n 100 > /tmp/aether-unpack/payload-strings.txt || true
+            exit 2
+          fi
+          test -n "$(find "$out" -type f -print -quit)"
+          find "$out" -type f -printf '%P\t%s bytes\n' | sort > /tmp/aether-unpack/MANIFEST.tsv
+          echo 'Extracted file count:'
+          wc -l < /tmp/aether-unpack/MANIFEST.tsv
+          head -n 100 /tmp/aether-unpack/MANIFEST.tsv
+
+      - name: Publish unpacked source files into this GitHub repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source-unpacked
+          rsync -a --delete /tmp/aether-unpack/extracted/ source-unpacked/
+          cp /tmp/aether-unpack/MANIFEST.tsv source-unpacked/MANIFEST.tsv
+          cp /tmp/aether-unpack/payload /tmp/aether-unpack/payload.bin
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add source-unpacked
+          if git diff --cached --quiet; then
+            echo 'No changes to publish.'
+          else
+            git commit -m 'Unpack Aether source archive for development'
+            git push origin HEAD:main
+          fi
+
+      - name: Keep diagnostics if extraction fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aether-source-unpack-diagnostics
+          path: |
+            /tmp/aether-unpack/payload
+            /tmp/aether-unpack/payload-strings.txt
+            /tmp/aether-unpack/tar-list.txt
+          if-no-files-found: ignore
+          retention-days: 7
