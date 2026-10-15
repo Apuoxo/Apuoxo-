@@ -1,4 +1,4 @@
-name: Unpack Aether source archive in source repository
+name: Extract Aether ISO contents for source inspection
 
 on:
   push:
@@ -11,85 +11,101 @@ permissions:
   contents: write
 
 jobs:
-  unpack:
+  unpack-iso:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install archive tools
+      - name: Install ISO and archive tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full file unzip tar gzip
+          sudo apt-get install -y xorriso p7zip-full file unzip tar gzip rsync
 
-      - name: Decompress and identify source payload
+      - name: Decompress .gz and identify the .aaf image
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/aether-unpack/extracted
+          mkdir -p /tmp/aether-unpack/iso /tmp/aether-unpack/extracted
           gzip -t aether-src-latest.aaf.gz
-          gzip -dc aether-src-latest.aaf.gz > /tmp/aether-unpack/payload
-          echo 'Compressed archive:'
+          gzip -dc aether-src-latest.aaf.gz > /tmp/aether-unpack/aether-src-latest.aaf
+          echo 'Compressed input:'
           file aether-src-latest.aaf.gz
-          echo 'Decompressed payload:'
-          file /tmp/aether-unpack/payload
-          wc -c aether-src-latest.aaf.gz /tmp/aether-unpack/payload
-
-      - name: Extract payload
-        shell: bash
-        run: |
-          set -euo pipefail
-          payload=/tmp/aether-unpack/payload
-          out=/tmp/aether-unpack/extracted
-          if tar -tf "$payload" >/tmp/aether-unpack/tar-list.txt 2>/dev/null; then
-            tar -xf "$payload" -C "$out"
-          elif unzip -t "$payload" >/dev/null 2>&1; then
-            unzip -q "$payload" -d "$out"
-          elif 7z l "$payload" >/dev/null 2>&1; then
-            7z x -y "-o$out" "$payload" >/dev/null
+          echo 'Decompressed .aaf:'
+          file /tmp/aether-unpack/aether-src-latest.aaf
+          wc -c aether-src-latest.aaf.gz /tmp/aether-unpack/aether-src-latest.aaf
+          cp /tmp/aether-unpack/aether-src-latest.aaf source-image.aaf.tmp
+          if file /tmp/aether-unpack/aether-src-latest.aaf | grep -qiE 'ISO 9660|ISO image'; then
+            echo 'Detected ISO image via file(1).'
+          elif xorriso -indev /tmp/aether-unpack/aether-src-latest.aaf -toc 2>&1 | grep -qiE 'ISO 9660|Volume id|ISO image'; then
+            echo 'Detected ISO image via xorriso.'
           else
-            echo 'The .gz layer is valid, but its payload is not recognized as tar, zip, or 7z.' >&2
-            echo 'Payload metadata:' >&2
-            file "$payload" >&2
-            od -An -tx1 -N64 "$payload" >&2
-            strings -n 8 "$payload" | head -n 100 > /tmp/aether-unpack/payload-strings.txt || true
+            echo 'Input does not appear to be an ISO image.' >&2
+            od -An -tx1 -N96 /tmp/aether-unpack/aether-src-latest.aaf >&2
             exit 2
           fi
-          test -n "$(find "$out" -type f -print -quit)"
-          find "$out" -type f -printf '%P\t%s bytes\n' | sort > /tmp/aether-unpack/MANIFEST.tsv
-          echo 'Extracted file count:'
-          wc -l < /tmp/aether-unpack/MANIFEST.tsv
-          head -n 100 /tmp/aether-unpack/MANIFEST.tsv
+          xorriso -indev /tmp/aether-unpack/aether-src-latest.aaf -find / -type f -exec lsdl > /tmp/aether-unpack/iso-file-list.txt 2>&1 || true
 
-      - name: Publish unpacked source files into this GitHub repository
+      - name: Extract ISO filesystem
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p source-unpacked
-          rsync -a --delete /tmp/aether-unpack/extracted/ source-unpacked/
-          cp /tmp/aether-unpack/MANIFEST.tsv source-unpacked/MANIFEST.tsv
-          cp /tmp/aether-unpack/payload /tmp/aether-unpack/payload.bin
+          xorriso -osirrox on -indev /tmp/aether-unpack/aether-src-latest.aaf -extract / /tmp/aether-unpack/iso
+          test -n "$(find /tmp/aether-unpack/iso -mindepth 1 -print -quit)"
+          find /tmp/aether-unpack/iso -type f -printf '%P\t%s bytes\n' | sort > /tmp/aether-unpack/ISO-MANIFEST.tsv
+          echo "ISO file count: $(wc -l < /tmp/aether-unpack/ISO-MANIFEST.tsv)"
+          echo 'Top-level ISO entries:'
+          find /tmp/aether-unpack/iso -mindepth 1 -maxdepth 2 -printf '%y %P\n' | sort | head -n 200
+          echo 'Potential source markers:'
+          find /tmp/aether-unpack/iso -type f \( -name Cargo.toml -o -name Makefile -o -name CMakeLists.txt -o -name meson.build -o -name Kbuild -o -name '*.c' -o -name '*.h' -o -name '*.rs' -o -name '*.py' -o -name '*.sh' -o -name README.md \) -printf '%P\n' | head -n 300 > /tmp/aether-unpack/SOURCE-CANDIDATES.txt
+          cat /tmp/aether-unpack/SOURCE-CANDIDATES.txt
+
+      - name: Publish inspectable ISO contents and manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf source-unpacked
+          mkdir -p source-unpacked/iso-contents
+          # GitHub rejects individual files >=100 MB. Keep large image/package files
+          # out of the Git tree and report them in the manifest for later handling.
+          rsync -a --exclude='*.iso' --exclude='*.img' --exclude='*.aaf' --exclude='*.gz' --exclude='*.xz' --exclude='*.zst' --exclude='*.qcow2' --max-size=90m /tmp/aether-unpack/iso/ source-unpacked/iso-contents/
+          cp /tmp/aether-unpack/ISO-MANIFEST.tsv source-unpacked/ISO-MANIFEST.tsv
+          cp /tmp/aether-unpack/SOURCE-CANDIDATES.txt source-unpacked/SOURCE-CANDIDATES.txt
+          cat > source-unpacked/README.md <<'EOF'
+          # Aether ISO extraction
+
+          This directory is generated by GitHub Actions from `aether-src-latest.aaf.gz`.
+          The gzip layer is removed, the resulting `.aaf` is identified as an ISO image,
+          and the ISO filesystem is extracted with xorriso.
+
+          - `ISO-MANIFEST.tsv` lists files found in the ISO, including files too large for GitHub's normal Git limits.
+          - `SOURCE-CANDIDATES.txt` lists likely source files and build metadata.
+          - `iso-contents/` contains extracted files that can safely be committed to GitHub.
+          
+          This is an inventory/extraction step, not a claim that the ISO necessarily contains the complete source repository.
+          EOF
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add source-unpacked
+          git add -A source-unpacked
           if git diff --cached --quiet; then
             echo 'No changes to publish.'
           else
-            git commit -m 'Unpack Aether source archive for development'
+            git commit -m 'Extract Aether ISO contents for source inspection'
             git push origin HEAD:main
           fi
 
-      - name: Keep diagnostics if extraction fails
+      - name: Upload extraction diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: aether-source-unpack-diagnostics
+          name: aether-iso-extraction-diagnostics
           path: |
-            /tmp/aether-unpack/payload
-            /tmp/aether-unpack/payload-strings.txt
-            /tmp/aether-unpack/tar-list.txt
+            /tmp/aether-unpack/aether-src-latest.aaf
+            /tmp/aether-unpack/iso-file-list.txt
+            /tmp/aether-unpack/ISO-MANIFEST.tsv
+            /tmp/aether-unpack/SOURCE-CANDIDATES.txt
           if-no-files-found: ignore
           retention-days: 7
